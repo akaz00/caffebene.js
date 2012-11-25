@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset=utf-8>
+    <title>Caffe bene js</title>
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+<script>
+
+$.fn.caffebene = function() {
+    $(this).each(function(i, v) {
+        var logoURL = 'http://www.arakor.co.kr/corp/images/caffebene_logo.jpg';
+        var bgmEl = $('<object class="caffebene-bgm" data="http://pds2.bgmstore.net/bgm/37681.swf" width="1px" height="1px" type="application/x-shockwave-flash" style="position: absolute; left: -10000px">');
+        var logoWidth = 120;
+        var logoHeight = 47;
+        var self = $(v);
+
+        if(self.prop('tagName') == 'IMG') {
+            $(this).hover(function() {
+                if($.browser.msie) {
+                    self.css('filter', 'gray');
+                    self.css('-ms-filter', 'progid:DXImageTransform.Microsoft.BasicImage(grayscale=1)');
+                } else {
+                    self.css('-webkit-filter', 'grayscale(100%)');
+                    self.css('filter', 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale")');
+                }
+
+                var targetWidth = self.width();
+                var targetHeight = self.height();
+                var targetLeft = self.offset().left;
+                var targetTop = self.offset().top;
+                var marginBottom = 10;
+
+                var logo = $('<img />').attr('src', logoURL).css({ 
+                    'position': 'absolute',
+                    'left': targetLeft + ((targetWidth / 2) - (logoWidth / 2)),
+                    'top': targetTop + (targetHeight - (logoHeight + marginBottom)),
+                    'opacity': 0
+                }).addClass('caffebene-logo');
+
+                if(!$.browser.msie) {
+                    logo.css({
+                        '-webkit-transition': 'opacity 0.5s linear',
+                        '-moz-transition':  'opacity 0.5s linear',
+                        '-o-transition': 'opacity 0.5s linear'
+                    });
+                }
+
+                $('body').append(logo);
+                
+                if(!$.browser.msie) {
+                    setTimeout(function() {
+                        logo.css('opacity', 1);
+                    }, 0);
+                    $('body').append(bgmEl);
+                } else {
+                    logo.animate({
+                        opacity: 1
+                    }, 500, function() {
+                    });
+                }
+
+            }, function() {
+                if($.browser.msie) {
+                    self.css('filter', 'none');
+                    self.css('-ms-filter', 'progid:DXImageTransform.Microsoft.BasicImage(grayscale=0)');
+                } else {
+                    self.css('-webkit-filter', '');
+                    self.css('filter', 'none');
+                    $('.caffebene-bgm').remove();
+                }
+                $('.caffebene-logo').remove();
+            });
+        }
+    });
+};
+
+$(document).ready(function() {
+
+    $('.caffebene').caffebene();
+});
+
+</script>
+<div>
+  <img class="caffebene" src="http://pictures-of-cats.org/wp-content/uploads/images/punch-face-persians-of-india-and-pakistan-21617291.jpg" />
+  <img class="caffebene" src="http://scodal.com/a/saved5/11007800150.jpg" />
+  <img class="caffebene" src="http://thefunnyinbox.com/wp-content/uploads/2011/07/Funny_Cat.jpg" />
+</div>
+</body>
+</html>
