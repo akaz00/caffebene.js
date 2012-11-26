@@ -8,10 +8,17 @@
 <body>
 <script>
 
-$.fn.caffebene = function() {
+$.fn.caffebene = function(option) {
+    var option = option || {};
+    var resize = true;
+    if('resize' in option) {
+        resize = option.resize;
+    }
+    var images = option.images || [];
+
     $(this).each(function(i, v) {
         var logoURL = 'http://www.arakor.co.kr/corp/images/caffebene_logo.jpg';
-        var bgmEl = $('<object class="caffebene-bgm" data="http://pds2.bgmstore.net/bgm/37681.swf" width="1px" height="1px" type="application/x-shockwave-flash" style="position: absolute; left: -10000px">');
+        var bgmEl = $('<object class="caffebene-bgm" data="https://dl.dropbox.com/s/1cwc2bo371q31ib/causeyou.swf" width="1px" height="1px" type="application/x-shockwave-flash" style="position: absolute; left: -10000px">');
         var logoWidth = 120;
         var logoHeight = 47;
         var self = $(v);
@@ -31,29 +38,46 @@ $.fn.caffebene = function() {
                 var targetLeft = self.offset().left;
                 var targetTop = self.offset().top;
                 var marginBottom = 10;
+                
+                if(resize) {
+                    logoWidth = targetWidth / 3;
+                    logoHeight = logoWidth * 0.392;
+                }
 
                 var logo = $('<img />').attr('src', logoURL).css({ 
                     'position': 'absolute',
+                    'width': logoWidth,
+                    'height': logoHeight,
                     'left': targetLeft + ((targetWidth / 2) - (logoWidth / 2)),
                     'top': targetTop + (targetHeight - (logoHeight + marginBottom)),
                     'opacity': 0
                 }).addClass('caffebene-logo');
 
+                $('body').append(logo);
+                
                 if(!$.browser.msie) {
                     logo.css({
                         '-webkit-transition': 'opacity 0.5s linear',
                         '-moz-transition':  'opacity 0.5s linear',
                         '-o-transition': 'opacity 0.5s linear'
                     });
-                }
-
-                $('body').append(logo);
-                
-                if(!$.browser.msie) {
                     setTimeout(function() {
                         logo.css('opacity', 1);
                     }, 0);
+
                     $('body').append(bgmEl);
+                    
+                    if(images.length > 0) {
+                        var interval = 3 * 1000;
+                        $.each(images, function(i, v) {
+                            setTimeout(function() {
+                                $('.caffebene-logo').attr('src', v);
+                            }, (i + 1) * interval)
+                        });
+                        setTimeout(function() {
+                            $('.caffebene-logo').remove();
+                        }, (images.length + 1) * interval);
+                    }
                 } else {
                     logo.animate({
                         opacity: 1
@@ -77,8 +101,19 @@ $.fn.caffebene = function() {
 };
 
 $(document).ready(function() {
-
-    $('.caffebene').caffebene();
+    $('.caffebene').caffebene({
+        'resize': false,
+        'images': [
+            'http://img.incruit.com/Event/2010/01_data/data_logo.jpg',
+            'http://postfiles2.naver.net/20121024_193/hankukpol1_1351066668998cUeie_JPEG/undefined.jpg',
+            'http://www.mma.go.kr/kor/c_img/main_img/copy_logo.gif',
+            'http://61.96.208.197/UPLOAD_FILES/company/jeonbuk.jpg',
+            'http://image.asiatoday.co.kr/file/%EB%A1%9C%EA%B3%A0-%EC%9B%B0%EB%B9%99%EB%A7%88%EC%9D%84.gif',
+            'http://image.asiatoday.co.kr/file/%EB%A1%9C%EA%B3%A0-%EC%95%84%EC%A7%80%EB%A7%A4.gif'
+        ],
+        'animate': true
+    });
+    // $('.caffebene').caffebene();
 });
 
 </script>
